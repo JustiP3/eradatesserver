@@ -9,6 +9,8 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+var db = require("./database.js")
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -21,6 +23,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.get("/api/datetypes", (req, res, next) => {
+  var sql = "select * from datetype"
+  var params = []
+  db.all(sql, params, (err, rows) => {
+      if (err) {
+        res.status(400).json({"error":err.message});
+        return;
+      }
+      res.json({
+          "message":"success",
+          "data":rows
+      })
+    });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
