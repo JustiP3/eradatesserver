@@ -36,23 +36,13 @@ app.get("/api/eras", (req, res, next) => {
   var params = []
   selectAll(sql, params, res)
 });
-app.get("/api/eras/dates", (req, res, next) => {
-  let rows = []
+app.get("/api/eras/:id", (req, res, next) => {
+
   let sql = `SELECT type type
             FROM typeeras
             WHERE era = ?`;
-
-  db.each(sql, ['1920s'], (err, row) => {
-    if (err) {
-      throw err;
-    }
-    console.log(`${row.type}`);
-    rows << row;
-  });
-  res.json({
-    "message":"success",
-    "data":rows
-  })
+  let params = [req.params.id]
+  selectAll(sql, params, res)
 })
 
 // SQL Helper functions
