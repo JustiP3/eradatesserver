@@ -29,17 +29,35 @@ app.use('/users', usersRouter);
 app.get("/api/datetypes", (req, res, next) => {
   var sql = "select * from datetype"
   var params = []
-  selectAll(sql, params, err, rows)
+  selectAll(sql, params, res)
 });
 app.get("/api/eras", (req, res, next) => {
   var sql = "select * from era"
   var params = []
-  selectAll(sql, params, err, rows)
+  selectAll(sql, params, res)
 });
+app.get("/api/eras/dates", (req, res, next) => {
+  let rows = []
+  let sql = `SELECT type type
+            FROM typeeras
+            WHERE era = ?`;
+
+  db.each(sql, ['1920s'], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    console.log(`${row.type}`);
+    rows << row;
+  });
+  res.json({
+    "message":"success",
+    "data":rows
+  })
+})
 
 // SQL Helper functions
 
-const selectAll = (sql, params, err, rows) => {
+const selectAll = (sql, params, res) => {
   db.all(sql, params, (err, rows) => {
     if (err) {
       res.status(400).json({"error":err.message});

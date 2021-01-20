@@ -15,7 +15,8 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
         //create datetype table
         db.run(`CREATE TABLE datetype (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name text UNIQUE, 
+            name TEXT UNIQUE, 
+            safe BOOL,
             CONSTRAINT name_unique UNIQUE (name)
             )`,
         (err) => {
@@ -23,10 +24,12 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                 // Table already created
             } else {
                 // Table just created, creating some rows
-                const insert = 'INSERT INTO datetype (name) VALUES (?)'
-                db.run(insert, ["picnic"])
-                db.run(insert, ["disco"])
-                
+                const insert = 'INSERT INTO datetype (name, safe) VALUES (?, ?)'
+                db.run(insert, ["picnic", "true"])
+                db.run(insert, ["disco", "true"])
+                db.run(insert, ["hike", "false"])
+                db.run(insert, ["movies", "true"])
+                db.run(insert, ["drive-in", "false"])
             }
         });
 
@@ -34,7 +37,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
         //create era table
         db.run(`CREATE TABLE era (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            era text UNIQUE,
+            era TEXT UNIQUE,
             CONSTRAINT era_unique UNIQUE (era)
         )`,
         (err) => {
@@ -59,20 +62,28 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
         //create join table 
         db.run(`CREATE TABLE typeeras (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            era_id INTEGER,
-            type_id INTEGER
+            era TEXT,
+            type TEXT
         )`,
         (err) => {
             if (err) {
                 //Table already created
             } else {
                 //Table just created, adding some rows
-                const insert = 'INSERT INTO typeeras (era_id, type_id) VALUES (?, ?)'
-                db.run(insert, ["1", "1"])
-                db.run(insert, ["2", "7"])               
+                const insert = 'INSERT INTO typeeras (era, type) VALUES (?, ?)'
+                db.run(insert, ["1920s", "picnic"])
+                db.run(insert, ["1930s", "picnic"])  
+                db.run(insert, ["1940s", "hike"])
+                db.run(insert, ["1950s", "drive-in"])  
+                db.run(insert, ["1960s", "disco"])
+                db.run(insert, ["1970s", "disco"])  
+                db.run(insert, ["1980s", "movies"])
+                db.run(insert, ["1990s", "disco"])     
+                db.run(insert, ["2000s", "movies"])            
             }
         });
 
+     
         // database is open
     }
   
