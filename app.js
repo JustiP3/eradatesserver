@@ -44,6 +44,12 @@ app.get("/api/eras/:id", (req, res, next) => {
   let params = [req.params.id]
   selectAll(sql, params, res)
 })
+app.get("/api/eras/:id/safe", (req, res, next) => {
+
+  let sql = `SELECT type FROM typeeras WHERE era = ? AND type = (SELECT name FROM datetype WHERE safe = ?)`;
+  let params = [req.params.id, "true"]
+  selectAll(sql, params, res)
+})
 
 // SQL Helper functions
 
