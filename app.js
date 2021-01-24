@@ -31,6 +31,10 @@ app.get("/api/datetypes", (req, res, next) => {
   var params = []
   selectAll(sql, params, res)
 });
+app.post("/api/datetypes", (req, res, next) => {
+  const insert = 'INSERT INTO datetype (name, safe) VALUES (?, ?)'
+  db.run(insert, ["picnic", "true"], (err) => console.log(err))
+});
 app.get("/api/eras", (req, res, next) => {
   var sql = "select * from era"
   var params = []
