@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var cors = require('cors')
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -9,6 +10,7 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+app.use(cors())
 var db = require("./database.js")
 
 // view engine setup
@@ -33,7 +35,17 @@ app.get("/api/datetypes", (req, res, next) => {
 });
 app.post("/api/datetypes", (req, res, next) => {
   const insert = 'INSERT INTO datetype (name, safe) VALUES (?, ?)'
-  db.run(insert, ["picnic", "true"], (err) => console.log(err))
+  const dateName = req.body.dateName 
+  const safe = req.body.safe 
+
+  db.run(insert, [dateName, safe], (err) => {
+    if (err) {
+      console.log(err)
+      return res.json({status: "failed", error: err})
+    } else {
+      return res.json({status: "success"})
+    }    
+  }) 
 });
 app.get("/api/eras", (req, res, next) => {
   var sql = "select * from era"
