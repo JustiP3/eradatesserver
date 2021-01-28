@@ -48,7 +48,7 @@ app.post("/api/datetypes", (req, res, next) => {
   }) 
 });
 app.get("/api/eras", (req, res, next) => {
-  var sql = "select * from era"
+  var sql = "select * from typeeras ORDER BY era"
   var params = []
   selectAll(sql, params, res)
 });
@@ -66,7 +66,7 @@ app.post("/api/eras/:era/:type", (req, res, next) => {
   const era = req.body.era 
   const type = req.body.type 
 
-  db.run(insert, [era, type], (err) => {
+  db.run(insert, [era, safe], (err) => {
     if (err) {
       console.log(err)
       return res.json({status: "failed", error: err})
