@@ -52,18 +52,33 @@ app.get("/api/eras", (req, res, next) => {
   var params = []
   selectAll(sql, params, res)
 });
-app.get("/api/eras/:id", (req, res, next) => {
+app.get("/api/eras/:era", (req, res, next) => {
 
   let sql = `SELECT type type
             FROM typeeras
             WHERE era = ?`;
-  let params = [req.params.id]
+  let params = [req.params.era]
   selectAll(sql, params, res)
 })
-app.get("/api/eras/:id/safe", (req, res, next) => {
+
+app.post("/api/eras/:era/:type", (req, res, next) => {
+  const insert = 'INSERT INTO typeeras (era, type) VALUES (?, ?)'
+  const era = req.body.era 
+  const type = req.body.type 
+
+  db.run(insert, [era, type], (err) => {
+    if (err) {
+      console.log(err)
+      return res.json({status: "failed", error: err})
+    } else {
+      return res.json({status: "success"})
+    }    
+  }) 
+});
+app.get("/api/eras/:era/safe", (req, res, next) => {
 
   let sql = `SELECT type FROM typeeras WHERE era = ? AND type = (SELECT name FROM datetype WHERE safe = ?)`;
-  let params = [req.params.id, "true"]
+  let params = [req.params.era, "true"]
   selectAll(sql, params, res)
 })
 
