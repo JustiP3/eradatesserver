@@ -61,12 +61,12 @@ app.get("/api/eras/:era", (req, res, next) => {
   selectAll(sql, params, res)
 })
 
-app.post("/api/eras/:era/:type", (req, res, next) => {
+app.post("/api/eras/:era/", (req, res, next) => {
   const insert = 'INSERT INTO typeeras (era, type) VALUES (?, ?)'
   const era = req.body.era 
   const type = req.body.type 
 
-  db.run(insert, [era, safe], (err) => {
+  db.run(insert, [era, type], (err) => {
     if (err) {
       console.log(err)
       return res.json({status: "failed", error: err})
