@@ -26,6 +26,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+//Yelp API Routes
+
+app.get("/yelp", (req, res, next) => {
+  res.json({
+    "message":"success",
+    "data": "test"
+  })
+});
+
 //DB Request API Routes
 
 app.get("/api/datetypes", (req, res, next) => {
