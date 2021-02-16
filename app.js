@@ -1,3 +1,9 @@
+'use strict';
+const mod = require('./config')  // import yelp key secret
+const key = mod.YELP_KEY()  
+const yelp = require('yelp-fusion');
+const client = yelp.client(key);
+
 var createError = require('http-errors');
 var express = require('express');
 var cors = require('cors')
@@ -26,13 +32,46 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+
 //Yelp API Routes
 
 app.get("/yelp", (req, res, next) => {
-  res.json({
-    "message":"success",
-    "data": "test"
+
+  const latitude = req.query.latitude
+  const longitude = req.query.longitude   
+  const term = req.query.term  
+
+  
+  const searchRequest = {
+    term: term,
+    latitude: latitude,
+    longitude: longitude
+  };  
+  
+  client.search(searchRequest).then((response) => { 
+    if (!!response && !!response.jsonBody.businesses) {
+      res.send({
+        "message":"success",
+        "data": response.jsonBody.businesses,
+        "all": response
+        }) 
+
+      } else {
+        res.send({
+          "message":"success",
+          "data": "no businesses"
+        })
+      } 
   })
+  .catch((err) => {
+    console.log(err)
+      res.send({
+        "message": "error",
+        "error": err
+      }) 
+  });  
+
+  
 });
 
 //DB Request API Routes
